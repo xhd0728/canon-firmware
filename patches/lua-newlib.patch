@@ -1,0 +1,20 @@
+--- a/modules/lua/dietlibc/include/sys/cdefs.h
++++ b/modules/lua/dietlibc/include/sys/cdefs.h
+@@ -111,4 +111,17 @@
+ #define __attribute_formatarg__(x) __attribute__((format_arg(x)))
+ #endif
+ 
++#ifndef __dead2
++#define __dead2 __attribute__((__noreturn__))
+ #endif
++#ifndef __returns_twice
++#define __returns_twice __attribute__((__returns_twice__))
++#endif
++#ifndef _BEGIN_STD_C
++#define _BEGIN_STD_C
++#endif
++#ifndef _END_STD_C
++#define _END_STD_C
++#endif
++
++#endif

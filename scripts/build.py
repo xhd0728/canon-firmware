@@ -50,11 +50,15 @@ def prepare(language):
                 raise RuntimeError(f"Refusing to replace changed asset: {name}")
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(data)
-    patch = ROOT / "patches" / ("chinese-build.patch" if language == "zh" else "english-build.patch")
-    applied = subprocess.run(["git", "-C", str(src), "apply", "--reverse", "--check", str(patch)], capture_output=True)
-    if applied.returncode:
-        run("git", "-C", str(src), "apply", "--check", str(patch))
-        run("git", "-C", str(src), "apply", str(patch))
+    # The Lua/newlib compatibility declarations are already present in the
+    # pinned Chinese fork; apply the same declarations to the English source.
+    patches = ["chinese-build.patch"] if language == "zh" else ["english-build.patch", "lua-newlib.patch"]
+    for name in patches:
+        patch = ROOT / "patches" / name
+        applied = subprocess.run(["git", "-C", str(src), "apply", "--reverse", "--check", str(patch)], capture_output=True)
+        if applied.returncode:
+            run("git", "-C", str(src), "apply", "--check", str(patch))
+            run("git", "-C", str(src), "apply", str(patch))
     return src, restored
 
 
@@ -72,14 +76,17 @@ def build(language):
            f"ARM_BINPATH={tc}", f"READELF={tc}/arm-none-eabi-readelf", f"PYTHON={python}", f"PYTHON3={python}"]
     if platform.system() == "Darwin":
         cmd.append("STAT_CMD=stat -f %N:%z")
+    env = dict(os.environ)
+    env["PATH"] = str(python.parent) + os.pathsep + str(tc) + os.pathsep + env.get("PATH", "")
     with log.open("w") as stream:
-        result = subprocess.run(cmd, stdout=stream, stderr=subprocess.STDOUT)
+        result = subprocess.run(cmd, stdout=stream, stderr=subprocess.STDOUT, env=env)
     if result.returncode:
         print("\n".join(log.read_text(errors="replace").splitlines()[-80:]))
         raise SystemExit(result.returncode)
     manifest = {
         "camera": "Canon EOS 60D", "required_canon_firmware": "1.1.1", "language": language,
         "source": LOCK["sources"][language], "restored_assets_from": LOCK["sources"]["en"] if restored else None,
+        "patches": ["chinese-build.patch"] if language == "zh" else ["english-build.patch", "lua-newlib.patch"],
         "toolchain": LOCK["toolchain"]["version"], "build_host": platform.system() + " " + platform.machine(),
         "built_at": datetime.now(timezone.utc).isoformat(),
         "repository_commit": subprocess.check_output(["git", "-C", str(ROOT), "rev-parse", "HEAD"], text=True).strip(),
