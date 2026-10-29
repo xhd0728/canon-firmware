@@ -1,0 +1,24 @@
+--- a/platform/Makefile
++++ b/platform/Makefile
+@@ -598,7 +598,7 @@
+ 	@echo 'Camera   : $(MODEL)' >> $@.tmp
+ 	@echo 'Firmware : $(FW_VERSION)' >> $@.tmp
+ 	@printf 'Commit: ' >> $@.tmp
+-	$(BUILD_TOOLS_DIR)/git_summary.py >> $@.tmp
++	$(PYTHON) $(BUILD_TOOLS_DIR)/git_summary.py >> $@.tmp
+ 	@echo '' >> $@.tmp
+ 	@echo 'Built on : '`date -u "+%Y-%m-%d %H:%M:%S"`' by '`whoami`@`hostname` >> $@.tmp
+ 	@echo '' >> $@.tmp
+@@ -607,10 +607,10 @@
+ $(BUILD_DIR)/version.c: FORCE | $(BUILD_DIR)
+ 	@echo "const char build_version[] = \"$(VERSION)\";" > $(BUILD_DIR)/version.tmp
+ 	@printf 'const char build_id[] = "' >> $(BUILD_DIR)/version.tmp
+-	$(BUILD_TOOLS_DIR)/git_summary.py >> $(BUILD_DIR)/version.tmp
++	$(PYTHON) $(BUILD_TOOLS_DIR)/git_summary.py >> $(BUILD_DIR)/version.tmp
+ 	@echo '";' >> $(BUILD_DIR)/version.tmp
+ 	@echo 'const char build_date[] ="'`$(DATE) "+%Y-%m-%d %H:%M:%S %Z"`'";' >> $(BUILD_DIR)/version.tmp
+-	@echo 'const char build_user[] = "'`whoami`@`hostname`'";'  >> $(BUILD_DIR)/version.tmp
++	@echo 'const char build_user[] = "xhd0728/canon-firmware";'  >> $(BUILD_DIR)/version.tmp
+ 	mv $(BUILD_DIR)/version.tmp $@
+ 
+ $(BUILD_DIR)/xor_chk: $(BUILD_TOOLS_DIR)/xor_chk.c | $(BUILD_DIR)

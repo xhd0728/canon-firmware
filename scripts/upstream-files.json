@@ -1,0 +1,15 @@
+[
+  "src/font-small.c",
+  "src/font-med2.c",
+  "src/font-large.c",
+  "src/font-small2.c",
+  "src/font-dyn.c",
+  "src/font-med.c",
+  "src/font-med2.in",
+  "src/font-med.in",
+  "src/font-small.in",
+  "src/font-small2.in",
+  "src/font-large.in",
+  "src/zip.txt",
+  "platform/60D.111/ML-SETUP.FIR"
+]

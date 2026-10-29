@@ -1,0 +1,35 @@
+diff --git a/platform/Makefile b/platform/Makefile
+index b3c1723..d44879a 100644
+--- a/platform/Makefile
++++ b/platform/Makefile
+@@ -226,7 +226,7 @@ $(ZIP_DIR): | $(BUILD_DIR)
+ 	$(CP) $(TOP_DIR)/data/vram/*.lut $(BUILD_DIR)/zip/ML/data
+ 	-$(CP) -v $(TOP_DIR)/doc/cam/* $(BUILD_DIR)/zip/ML/doc
+ 	$(CP) $(TOP_DIR)/data/fonts/*.rbf $(BUILD_DIR)/zip/ML/fonts
+-	$(CP) $(TOP_DIR)/data/fonts/*.crbf $(BUILD_DIR)/zip/ML/fonts
++	$(CP) $(TOP_DIR)/data/fonts/doc/menuidx.dat $(BUILD_DIR)/zip/ML/doc/
+ 	$(CP) $(TOP_DIR)/scripts/*.lua $(BUILD_DIR)/zip/ML/scripts
+ 	$(CP) $(TOP_DIR)/scripts/lib/*.lua $(BUILD_DIR)/zip/ML/scripts/lib
+ 	-$(CP) $(TOP_DIR)/doc/README.user $(BUILD_DIR)/zip/ML/README
+@@ -599,7 +599,7 @@ $(BUILD_DIR)/version.bin: FORCE | $(BUILD_DIR)
+ 	@echo 'Camera   : $(MODEL)' >> $@.tmp
+ 	@echo 'Firmware : $(FW_VERSION)' >> $@.tmp
+ 	@printf 'Commit: ' >> $@.tmp
+-	$(BUILD_TOOLS_DIR)/git_summary.py >> $@.tmp
++	$(PYTHON) $(BUILD_TOOLS_DIR)/git_summary.py >> $@.tmp
+ 	@echo '' >> $@.tmp
+ 	@echo 'Built on : '`date -u "+%Y-%m-%d %H:%M:%S"`' by '`whoami`@`hostname` >> $@.tmp
+ 	@echo '' >> $@.tmp
+@@ -608,10 +608,10 @@ $(BUILD_DIR)/version.bin: FORCE | $(BUILD_DIR)
+ $(BUILD_DIR)/version.c: FORCE | $(BUILD_DIR)
+ 	@echo "const char build_version[] = \"$(VERSION)\";" > $(BUILD_DIR)/version.tmp
+ 	@printf 'const char build_id[] = "' >> $(BUILD_DIR)/version.tmp
+-	$(BUILD_TOOLS_DIR)/git_summary.py >> $(BUILD_DIR)/version.tmp
++	$(PYTHON) $(BUILD_TOOLS_DIR)/git_summary.py >> $(BUILD_DIR)/version.tmp
+ 	@echo '";' >> $(BUILD_DIR)/version.tmp
+ 	@echo 'const char build_date[] ="'`$(DATE) "+%Y-%m-%d %H:%M:%S %Z"`'";' >> $(BUILD_DIR)/version.tmp
+-	@echo 'const char build_user[] = "Chase Chan";'  >> $(BUILD_DIR)/version.tmp
++	@echo 'const char build_user[] = "xhd0728/canon-firmware - Chinese by Chase Chan";'  >> $(BUILD_DIR)/version.tmp
+ 	mv $(BUILD_DIR)/version.tmp $@
+ 
+ 
